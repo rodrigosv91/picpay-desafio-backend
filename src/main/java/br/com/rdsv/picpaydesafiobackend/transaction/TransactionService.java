@@ -1,6 +1,6 @@
 package br.com.rdsv.picpaydesafiobackend.transaction;
 
-import br.com.rdsv.picpaydesafiobackend.exceptions.InvalidTransactionException;
+import br.com.rdsv.picpaydesafiobackend.authorization.AuthorizerService;
 import br.com.rdsv.picpaydesafiobackend.wallet.Wallet;
 import br.com.rdsv.picpaydesafiobackend.wallet.WalletRepository;
 import br.com.rdsv.picpaydesafiobackend.wallet.WalletType;
@@ -11,10 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final WalletRepository walletRepository;
+    private final AuthorizerService authorizerService;
 
-    public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository) {
+    public TransactionService(TransactionRepository transactionRepository, WalletRepository walletRepository, AuthorizerService authorizerService) {
         this.transactionRepository = transactionRepository;
         this.walletRepository = walletRepository;
+        this.authorizerService = authorizerService;
     }
 
     @Transactional
@@ -30,6 +32,8 @@ public class TransactionService {
         walletRepository.save(wallet.debit(transaction.value()));
         
         // 4 - chamar serviços externos
+        // authorize transaction
+        authorizerService.authorize(transaction);
 
         return newTransaction;
     }
