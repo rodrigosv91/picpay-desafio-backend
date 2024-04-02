@@ -8,6 +8,8 @@ import br.com.rdsv.picpaydesafiobackend.wallet.WalletType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class TransactionService {
     private final TransactionRepository transactionRepository;
@@ -72,6 +74,10 @@ public class TransactionService {
 
     private boolean isPayerNoThePayee(Transaction transaction, Wallet payer) {
         return !payer.id().equals(transaction.payee());
+    }
+
+    public List<Transaction> list() {
+        return transactionRepository.findAll();
     }
 
 
