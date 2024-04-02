@@ -19,7 +19,7 @@ public class AuthorizerService {
                 .retrieve()
                 .toEntity(Authorization.class);
 
-        if(response.getStatusCode().isError() || response.getBody().isAuthorized()){
+        if(response.getStatusCode().isError() || !response.getBody().isAuthorized()){
             throw new UnauthorizedTransactionException("Transaction not Authorized!");
         }
     }
