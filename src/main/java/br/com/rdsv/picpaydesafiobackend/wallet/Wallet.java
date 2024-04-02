@@ -16,4 +16,8 @@ public record Wallet(
     public Wallet debit(BigDecimal value) {
         return new Wallet(id, fullName, cpf, email, password, type, balance.subtract(value));
     }
+
+    public Wallet credit(BigDecimal value) {
+        return new Wallet(id, fullName, cpf, email, password, type, balance.add(value));
+    }
 }

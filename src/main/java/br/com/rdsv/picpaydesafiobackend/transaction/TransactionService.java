@@ -33,8 +33,11 @@ public class TransactionService {
         var newTransaction = transactionRepository.save(transaction);
 
         // 3 - debitar da carteira
-        var wallet = walletRepository.findById(transaction.payer()).get();
-        walletRepository.save(wallet.debit(transaction.value()));
+        var walletPayer = walletRepository.findById(transaction.payer()).get();
+        var walletPayee = walletRepository.findById(transaction.payee()).get();
+
+        walletRepository.save(walletPayer.debit(transaction.value()));
+        walletRepository.save(walletPayee.credit(transaction.value()));
         
         // 4 - chamar serviços externos
         // authorize transaction
