@@ -32,7 +32,7 @@ public class TransactionService {
         // 2 - criar a transaction
         var newTransaction = transactionRepository.save(transaction);
 
-        // 3 - debitar da carteira
+        // 3 - debitar/depositar nas carteiras
         var walletPayer = walletRepository.findById(transaction.payer()).get();
         var walletPayee = walletRepository.findById(transaction.payee()).get();
 
@@ -40,11 +40,9 @@ public class TransactionService {
         walletRepository.save(walletPayee.credit(transaction.value()));
         
         // 4 - chamar serviços externos
-        // authorize transaction
         authorizerService.authorize(transaction);
 
         // 5 - notificação
-        // send notification
         notificationService.notify(transaction);
 
         return newTransaction;
@@ -83,19 +81,4 @@ public class TransactionService {
         return transactionRepository.findAll();
     }
 
-
-    //validate 2
-//    private void validate(Transaction transaction) {
-//        Wallet payerWallet = findWalletByIdOrThrow(transaction.payer(), "Payer wallet not found");
-//        Wallet payeeWallet = findWalletByIdOrThrow(transaction.payee(), "Payee wallet not found");
-//
-//        if (!isTransactionValid(transaction, payerWallet)) {
-//            throw new InvalidTransactionException("Invalid Transaction - " + transaction);
-//        }
-//    }
-//
-//    private Wallet findWalletByIdOrThrow(Long walletId, String errorMessage) {
-//        return walletRepository.findById(walletId)
-//                .orElseThrow(() -> new InvalidTransactionException(errorMessage));
-//    }
 }
